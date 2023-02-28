@@ -40,7 +40,6 @@ class SkillExtract(Resource):
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             if os.path.splitext(filepath)[-1].lower() in ALLOWED_EXTENSIONS:
                 file.save(filepath)
-
             else:
                 return {'message': f"File format {os.path.splitext(filepath)[-1]} not supported!"}
 
