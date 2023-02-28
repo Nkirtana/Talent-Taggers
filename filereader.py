@@ -42,7 +42,7 @@ class ReadFiles:
         self.text_dict[doc_path] = text
 
     # Read all the resumes from a given folder and return list of text from resumes
-    def read_resumes(self):
+    def read_input(self):
 
         # Check if input path is file
         if os.path.isfile(self.input_path):

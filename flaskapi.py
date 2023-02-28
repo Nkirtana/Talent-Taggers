@@ -3,6 +3,12 @@ from flask_restful import Resource, Api
 from werkzeug.utils import secure_filename
 
 import os
+from skillextractor import ExtractSkills
+from filereader import ReadFiles
+
+extract_skills_obj = ExtractSkills()
+
+
 
 # https://flask.palletsprojects.com/en/2.2.x/patterns/fileuploads/
 # https://flask-restful.readthedocs.io/en/latest/quickstart.html#a-minimal-api
@@ -20,7 +26,7 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 
 # API class
-class SkillExtract(Resource):
+class SkillExtractAPI(Resource):
 
     @staticmethod
     def get():
@@ -43,12 +49,17 @@ class SkillExtract(Resource):
             else:
                 return {'message': f"File format {os.path.splitext(filepath)[-1]} not supported!"}
 
-            return {'message': 'File loaded successfully!'}
-            # os.remove(filepath)
+            file_reader_obj = ReadFiles(filepath)
+            file_reader_obj.read_input()
+            file_text = file_reader_obj.text_dict[filepath]
+
+            os.remove(filepath)
+
+            return extract_skills_obj.return_skills(file_text)
 
 
 # Routing for API
-api.add_resource(SkillExtract, '/')
+api.add_resource(SkillExtractAPI, '/')
 
 if __name__ == '__main__':
     app.run(debug=True)
