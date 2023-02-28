@@ -1,0 +1,39 @@
+{
+	"info": {
+		"_postman_id": "e2843227-ee75-4db8-930f-3d1dc0d3f1e8",
+		"name": "daen690",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13331284"
+	},
+	"item": [
+		{
+			"name": "http://127.0.0.1:5000",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "resume",
+							"type": "file",
+							"src": "/C:/Users/manoj/Desktop/career/fresumes/ManojBuddhaResume.pdf"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://127.0.0.1:5000",
+					"protocol": "http",
+					"host": [
+						"127",
+						"0",
+						"0",
+						"1"
+					],
+					"port": "5000"
+				}
+			},
+			"response": []
+		}
+	]
+}
