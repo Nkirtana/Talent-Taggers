@@ -1,4 +1,4 @@
-from flask import Flask, request
+from flask import Flask, request, jsonify
 from flask_restful import Resource, Api
 from werkzeug.utils import secure_filename
 
@@ -6,12 +6,17 @@ import os
 from skillextractor import ExtractSkills
 from filereader import ReadFiles
 
-extract_skills_obj = ExtractSkills()
+from flask_jwt_extended import create_access_token
+from flask_jwt_extended import get_jwt_identity
+from flask_jwt_extended import jwt_required
+from flask_jwt_extended import JWTManager
 
+extract_skills_obj = ExtractSkills()
 
 
 # https://flask.palletsprojects.com/en/2.2.x/patterns/fileuploads/
 # https://flask-restful.readthedocs.io/en/latest/quickstart.html#a-minimal-api
+# https://flask-jwt-extended.readthedocs.io/en/stable/basic_usage/
 
 app = Flask(__name__)
 api = Api(app)
@@ -24,15 +29,34 @@ UPLOAD_FOLDER = os.path.join(basedir, 'static')
 # Path where the files sent through api needs to be saved
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
+# Setup the Flask-JWT-Extended extension
+app.config["JWT_SECRET_KEY"] = "super-secret"  # Change this!
+jwt = JWTManager(app)
+
+
+# Create a route to authenticate your users and return JWTs. The
+# create_access_token() function is used to actually generate the JWT.
+@app.route("/login", methods=["POST"])
+def login():
+    username = request.json.get("username", None)
+    password = request.json.get("password", None)
+    if username != "test" or password != "test":
+        return jsonify({"message": "Bad username or password"}), 401
+
+    access_token = create_access_token(identity=username)
+    return jsonify(access_token=access_token)
+
 
 # API class
 class SkillExtractAPI(Resource):
 
     @staticmethod
+    @jwt_required()
     def get():
         return {'message': 'API is up and running!'}
 
     @staticmethod
+    @jwt_required()
     def post():
         if request.method == 'POST':
             # print('POST request received')
@@ -42,6 +66,7 @@ class SkillExtractAPI(Resource):
             file = request.files['resume']
             if file.filename == '':
                 return {'message': 'file in not selected'}
+            # To avoid malicious access to server directory
             filename = secure_filename(file.filename)
             filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             if os.path.splitext(filepath)[-1].lower() in ALLOWED_EXTENSIONS:
