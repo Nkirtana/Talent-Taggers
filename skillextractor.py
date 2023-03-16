@@ -18,7 +18,8 @@ class ExtractSkills:
             # loading spacy english medium core model
             self.nlp = spacy.load("en_core_web_md")
         except OSError:
-            os.system('python3 -m spacy download en_core_web_md')
+            os.system('python -m spacy download en_core_web_md')
+            self.nlp = spacy.load("en_core_web_md")
         # loading all the skills in the database
         self.skill_list = pd.read_excel(skill_path).skills.tolist()
         # Cleaning the skills database
