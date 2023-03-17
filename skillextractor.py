@@ -8,7 +8,7 @@ import pandas as pd
 from spacy.matcher import Matcher, PhraseMatcher
 
 basedir = os.path.abspath(os.path.dirname(__file__))
-skill_path = os.path.join(basedir, 'skilldb', 'all_skills.xlsx')
+skill_path = os.path.join(basedir, 'skilldb', 'all_skills.csv')
 
 
 class ExtractSkills:
@@ -21,9 +21,13 @@ class ExtractSkills:
             os.system('python -m spacy download en_core_web_md')
             self.nlp = spacy.load("en_core_web_md")
         # loading all the skills in the database
-        self.skill_list = pd.read_excel(skill_path).skills.tolist()
+        # self.skill_list = pd.read_excel(skill_path).skills.tolist()
+
+        self.skill_list = pd.read_csv(skill_path).skills.tolist()
+
         # Cleaning the skills database
         self.skill_list = [str(skill) for skill in self.skill_list if self.skill_check(str(skill))]
+        self.skill_list = sorted(self.skill_list, key=lambda x: -len(x))
 
         # loading spacy document for each skill
         self.skill_list_docs = list()
@@ -47,9 +51,27 @@ class ExtractSkills:
     def return_skills(self, input_text):
         input_text_docs = self.nlp(input_text)
         matches = []
+        remove_idx = []
         for match_str_id, i, j in self.phrase_matcher(input_text_docs):
-            matches.append(self.nlp.vocab.strings[match_str_id])
-        skill_counts = Counter(matches)
+            if len(matches) == 0:
+                matches.append((self.nlp.vocab.strings[match_str_id], i, j))
+            else:
+                new_entry = True
+                for idx, (match_prev, i_prev, j_prev) in enumerate(matches):
+                    if i_prev == i:
+                        if j_prev < j:
+                            new_entry = False
+                            remove_idx.append(idx)
+                            matches.append((self.nlp.vocab.strings[match_str_id], i, j))
+                if new_entry:
+                    matches.append((self.nlp.vocab.strings[match_str_id], i, j))
+
+        matches_skills = []
+        for idx, (match_str, i, j) in enumerate(matches):
+            if idx not in remove_idx:
+                matches_skills.append(match_str)
+
+        skill_counts = Counter(matches_skills)
 
         return skill_counts
 
