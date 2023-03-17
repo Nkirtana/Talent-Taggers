@@ -23,7 +23,7 @@ class ExtractSkills:
         # loading all the skills in the database
         # self.skill_list = pd.read_excel(skill_path).skills.tolist()
 
-        self.skill_list = pd.read_csv(skill_path).skills.tolist()
+        self.skill_list = pd.read_csv(skill_path).skill_name.tolist()
 
         # Cleaning the skills database
         self.skill_list = [str(skill) for skill in self.skill_list if self.skill_check(str(skill))]
@@ -49,7 +49,7 @@ class ExtractSkills:
         return True
 
     def return_skills(self, input_text):
-        input_text_docs = self.nlp(input_text)
+        input_text_docs = self.nlp(input_text.lower())
         matches = []
         remove_idx = []
         for match_str_id, i, j in self.phrase_matcher(input_text_docs):
