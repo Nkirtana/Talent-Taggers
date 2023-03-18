@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import os
 from skillextractor import ExtractSkills
 from filereader import ReadFiles
+from onet.keyword_search import Onet
 
 from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required
@@ -12,6 +13,7 @@ from flask_jwt_extended import JWTManager
 
 extract_skills_obj = ExtractSkills()
 
+onet_obj = Onet()
 
 # https://flask.palletsprojects.com/en/2.2.x/patterns/fileuploads/
 # https://flask-restful.readthedocs.io/en/latest/quickstart.html#a-minimal-api
@@ -82,8 +84,19 @@ class SkillExtractAPI(Resource):
             return extract_skills_obj.return_skills(file_text)
 
 
+class OnetSkillsUpdationAPI(Resource):
+    @staticmethod
+    @jwt_required()
+    def get():
+        global extract_skills_obj
+        message = onet_obj.update_skills_csv()
+        extract_skills_obj = ExtractSkills()
+        return message
+
+
 # Routing for API
 api.add_resource(SkillExtractAPI, '/')
+api.add_resource(OnetSkillsUpdationAPI, '/updateskills')
 
 if __name__ == '__main__':
     app.run(debug=True)
