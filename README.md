@@ -6,7 +6,6 @@ Recruiters spend alot of time to go through resumes of job applicants and analyz
 
 ## Table of Contents
 
-If your README is long, add a table of contents to make it easy for users to find what they need.
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
