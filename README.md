@@ -23,21 +23,23 @@ If your README is long, add a table of contents to make it easy for users to fin
 
 First step is, clone the github repository to local machine or a server
 
-$ git clone https://github.com/Nkirtana/Talent-Taggers.git
-$ cd Talent-Taggers
+  $ git clone https://github.com/Nkirtana/Talent-Taggers.git
+  $ cd Talent-Taggers
 
 Install all the project requirements
 
-$ pip install -r requirements.txt
+  $ pip install -r requirements.txt
 
 
 ## Usage
 
 Go to Talent-Tagers project path
-$ cd Talent-Taggers
+
+  $ cd Talent-Taggers
 
 Then, start the Flask server by running the command
-$ python flaskapi.py
+
+  $ python flaskapi.py
 
 Once the flask server is up, requests can be made to the Application Programming Interface (API) to extract skills from the API. "API_Usage.docx" document contains detailed steps to invoke the API.
 
