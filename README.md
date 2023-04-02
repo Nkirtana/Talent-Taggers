@@ -22,6 +22,7 @@ If your README is long, add a table of contents to make it easy for users to fin
 ## Installation
 
 First step is, clone the github repository to local machine or a server
+
 $ git clone https://github.com/Nkirtana/Talent-Taggers.git
 $ cd Talent-Taggers
 
