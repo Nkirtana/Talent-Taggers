@@ -56,12 +56,11 @@ def login():
 class SkillExtractAPI(Resource):
 
     @staticmethod
-    # @jwt_required()
     def get():
         return {'message': 'API is up and running!'}
 
     @staticmethod
-    # @jwt_required()
+    @jwt_required()
     def post():
         if request.method == 'POST':
             # print('POST request received')
