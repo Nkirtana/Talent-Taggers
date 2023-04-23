@@ -84,7 +84,7 @@ class SkillExtractAPI(Resource):
 
             if 'jd' in request.files:
                 jd = request.files['jd']
-                print(f"JD: {jd.filename}")
+                # print(f"JD: {jd.filename}")
                 if jd.filename == '':
                     return {'message': 'file in not selected'}
                 # To avoid malicious access to server directory
@@ -95,22 +95,25 @@ class SkillExtractAPI(Resource):
                 else:
                     return {'message': f"File format {os.path.splitext(filepath)[-1]} not supported!"}
 
-                print(jd_filename, jd_filepath)
+                # print(jd_filename, jd_filepath)
 
                 file_reader_obj = ReadFiles(jd_filepath)
                 file_reader_obj.read_input()
                 jd_text = file_reader_obj.text_dict[jd_filepath]
 
-            resume_skills = list(extract_skills_obj.return_skills(file_text).keys())
-            jd_skills = list(extract_skills_obj.return_skills(jd_text).keys())
-            # return {"jd":jd_text, "resume":file_text}
-            check_similarity_obj = CheckSimilarity(resume_skills=resume_skills, jd_skills=jd_skills
-                                                   , resume_text=file_text, jd_text=jd_text)
+                resume_skills = list(extract_skills_obj.return_skills(file_text).keys())
+                jd_skills = list(extract_skills_obj.return_skills(jd_text).keys())
+                # return {"jd":jd_text, "resume":file_text}
+                check_similarity_obj = CheckSimilarity(resume_skills=resume_skills, jd_skills=jd_skills
+                                                       , resume_text=file_text, jd_text=jd_text)
+                os.remove(jd_filepath)
+                os.remove(filepath)
+                return check_similarity_obj.all_scores()
 
-            os.remove(jd_filepath)
-            os.remove(filepath)
+            else:
 
-            return check_similarity_obj.all_scores()
+                os.remove(filepath)
+                return extract_skills_obj.return_skills(file_text)
 
 
 class OnetSkillsUpdationAPI(Resource):
