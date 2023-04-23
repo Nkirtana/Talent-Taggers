@@ -43,7 +43,7 @@ class CleanData:
         tokens = word_tokenize(self.input_text)
         output = list()
         for token in tokens:
-            if token not in self.punctuations:
+            if token.lower() not in self.stop_words:
                 output.append(token)
         self.input_text = " ".join(output)
         print("removed stopwords")

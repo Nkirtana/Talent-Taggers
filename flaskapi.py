@@ -11,6 +11,10 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
 
+# Skill matching import
+from check_similarity import CheckSimilarity
+
+
 extract_skills_obj = ExtractSkills()
 
 onet_obj = Onet()
@@ -52,12 +56,12 @@ def login():
 class SkillExtractAPI(Resource):
 
     @staticmethod
-    @jwt_required()
+    # @jwt_required()
     def get():
         return {'message': 'API is up and running!'}
 
     @staticmethod
-    @jwt_required()
+    # @jwt_required()
     def post():
         if request.method == 'POST':
             # print('POST request received')
@@ -79,9 +83,35 @@ class SkillExtractAPI(Resource):
             file_reader_obj.read_input()
             file_text = file_reader_obj.text_dict[filepath]
 
+            if 'jd' in request.files:
+                jd = request.files['jd']
+                print(f"JD: {jd.filename}")
+                if jd.filename == '':
+                    return {'message': 'file in not selected'}
+                # To avoid malicious access to server directory
+                jd_filename = secure_filename(jd.filename)
+                jd_filepath = os.path.join(app.config['UPLOAD_FOLDER'], jd_filename)
+                if os.path.splitext(jd_filepath)[-1].lower() in ALLOWED_EXTENSIONS:
+                    jd.save(jd_filepath)
+                else:
+                    return {'message': f"File format {os.path.splitext(filepath)[-1]} not supported!"}
+
+                print(jd_filename, jd_filepath)
+
+                file_reader_obj = ReadFiles(jd_filepath)
+                file_reader_obj.read_input()
+                jd_text = file_reader_obj.text_dict[jd_filepath]
+
+            resume_skills = list(extract_skills_obj.return_skills(file_text).keys())
+            jd_skills = list(extract_skills_obj.return_skills(jd_text).keys())
+            # return {"jd":jd_text, "resume":file_text}
+            check_similarity_obj = CheckSimilarity(resume_skills=resume_skills, jd_skills=jd_skills
+                                                   , resume_text=file_text, jd_text=jd_text)
+
+            os.remove(jd_filepath)
             os.remove(filepath)
 
-            return extract_skills_obj.return_skills(file_text)
+            return check_similarity_obj.all_scores()
 
 
 class OnetSkillsUpdationAPI(Resource):
@@ -97,6 +127,7 @@ class OnetSkillsUpdationAPI(Resource):
 # Routing for API
 api.add_resource(SkillExtractAPI, '/')
 api.add_resource(OnetSkillsUpdationAPI, '/updateskills')
+
 
 if __name__ == '__main__':
     app.run(debug=True)
