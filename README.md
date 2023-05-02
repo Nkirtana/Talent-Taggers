@@ -2,7 +2,7 @@
 
 ## Description
 
-Recruiters spend alot of time to go through resumes of job applicants and analyze how the skills of the applicant match with the skills advertised in the job description. This project aims to automate the manual process of reading numerous resumes received for a job opening and score the resume based on its match with the job description, thereby making the hiring process faster and efficient for both recruiters and candidates.
+The advent of the digital era has made job openings more accessible to a wide pool of candidates. This has led to an exponential increase in the number of applications for a vacancy. Due to this rise in number of applications, recruiters spend alot of time and effort sifting through the resumes of job applicants and analyzing how the skills of the applicant match with the skills advertised in the job description. This project aims to automate the manual process of reading numerous resumes received for a job opening and score the resume based on its match with the job description, thereby making the hiring process faster and efficient for both recruiters and candidates.
 
 
 ## Table of Contents
