@@ -11,7 +11,6 @@
 ## Requirements
 
 - Python
-- Postman or any tool to send API requests
 
 ## Installation
 
